@@ -19,3 +19,68 @@ The reader reconstructs each decomposed field through cellProcAddressing, preser
 POD and mean-centred exact DMD are complete for p, rho, Ux, and Uy, including rank sweeps, field errors, figures, and a held-out time interval. A global pressure-gradient screen is supplied for geometry inspection only. It is not a shock curve; therefore this package deliberately does not report shock-position error or shock-attached DMD performance.
 
 See FINAL_RESEARCH_SUMMARY.md for the evidence-based conclusion and 13_reproducibility/REPRODUCIBILITY.md for input/output provenance.
+# Shock-Aligned Reduced-Order Modeling of a Transient Compressible Wedge Flow
+
+This repository contains the complete workflow for a shock-aligned
+reduced-order modeling (ROM) study of a transient compressible flow
+over a wedge.
+
+The repository includes both the OpenFOAM simulation case used to
+generate the flow-field snapshots and the Python-based post-processing
+and reduced-order modeling workflow.
+
+## Workflow
+
+OpenFOAM Simulation
+        ↓
+Flow-field Snapshots
+        ↓
+Shock Tracking
+        ↓
+Snapshot Pre-processing
+        ↓
+POD / DMD
+        ↓
+Reduced-Order Reconstruction
+        ↓
+Error Evaluation
+
+## Contents
+
+- `OpenFOAM/` — OpenFOAM case used for the high-fidelity simulation.
+- `python/` — Python scripts for snapshot processing, shock tracking,
+  POD/DMD analysis, ROM reconstruction, and visualization.
+- `results/` — Selected figures and analysis outputs.
+
+## Physical Problem
+
+The case considers a transient compressible flow over a wedge.
+The OpenFOAM simulation is used as the high-fidelity reference solution
+for developing and evaluating the reduced-order model.
+
+## Reduced-Order Modeling
+
+The Python workflow performs:
+
+- snapshot preprocessing
+- shock-location tracking
+- shock-aligned coordinate transformation
+- POD analysis
+- Dynamic Mode Decomposition (DMD)
+- reduced-order reconstruction
+- reconstruction error evaluation
+
+## Reproducibility
+
+The OpenFOAM case files required to reproduce the high-fidelity
+simulation are included in this repository.
+
+Python dependencies are listed in `requirements.txt`.
+
+Generated solver outputs and large intermediate datasets are not
+included in the repository.
+
+## Status
+
+This repository contains the current research workflow for the
+shock-aligned reduced-order modeling study.
