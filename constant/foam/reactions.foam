@@ -1,0 +1,382 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  reactions.foam — H2/air kinetic mechanism
+  
+  Mechanism: Li et al. (2004) Int. J. Chem. Kinet. 36:566-575
+             19 elementary reactions, 9 species
+
+  Source values: Table I (cm³-mol-sec-kcal-K units)
+  SI conversion:
+    Bimolecular A : A_paper × 1e-3   [cm³/mol/s  → m³/kmol/s]
+    Trimolecular A: A_paper × 1e-6   [cm⁶/mol²/s → m⁶/kmol²/s]
+    Ta            : E[kcal/mol] × 503.07  [K]
+\*---------------------------------------------------------------------------*/
+
+reactions
+{
+    // ── R1: H + O2 = O + OH  (chain-branching) ──────────────────────────────
+    // Paper: A=3.55e15, n=-0.41, E=16.6  | Ref: Hessler [16]
+    // SI:    A=3.55e15×1e-3=3.55e12, Ta=16.6×503.07=8351
+    R1
+    {
+        type        reversibleArrheniusReaction;
+        reaction    "H + O2 = O + OH";
+        A           3.55e+12;
+        beta        -0.41;
+        Ta          8351.0;
+    }
+
+    // ── R2: O + H2 = H + OH ─────────────────────────────────────────────────
+    // Paper: A=5.08e4, n=2.67, E=6.29  | Ref: Sutherland [44]
+    // SI:    A=5.08e4×1e-3=5.08e1, Ta=6.29×503.07=3164
+    R2
+    {
+        type        reversibleArrheniusReaction;
+        reaction    "O + H2 = H + OH";
+        A           5.08e+01;
+        beta        2.67;
+        Ta          3164.0;
+    }
+
+    // ── R3: H2 + OH = H2O + H ───────────────────────────────────────────────
+    // Paper: A=2.16e8, n=1.51, E=3.43  | Ref: Michael [45]
+    // SI:    A=2.16e8×1e-3=2.16e5, Ta=3.43×503.07=1726
+    R3
+    {
+        type        reversibleArrheniusReaction;
+        reaction    "H2 + OH = H2O + H";
+        A           2.16e+05;
+        beta        1.51;
+        Ta          1726.0;
+    }
+
+    // ── R4: O + H2O = OH + OH ───────────────────────────────────────────────
+    // Paper: A=2.97e6, n=2.02, E=13.4  | Ref: Sutherland [46]
+    // SI:    A=2.97e6×1e-3=2.97e3, Ta=13.4×503.07=6741
+    R4
+    {
+        type        reversibleArrheniusReaction;
+        reaction    "O + H2O = OH + OH";
+        A           2.97e+03;
+        beta        2.02;
+        Ta          6741.0;
+    }
+
+    // ── R5: H2 + M = H + H + M  (3-body dissociation) ──────────────────────
+    // Paper: A=4.58e19, n=-1.40, E=104.38  | Ref: Tsang [47]
+    // SI:    A=4.58e19×1e-6=4.58e13, Ta=104.38×503.07=52510.44
+    // Efficiencies: H2=2.5, H2O=12.0, others=1.0
+    R5
+    {
+        type        reversibleThirdBodyArrheniusReaction;
+        reaction    "H2 = H + H ";
+        A           4.58e+16;
+        beta        -1.40;
+        Ta          52510.44;
+        coeffs
+        (
+		("H2"    2.5)
+		("O2"    1.0)
+		("H2O"   12.0)
+		("H"     1.0)
+		("O"     1.0)
+		("OH"    1.0)
+		("HO2"   1.0)
+		("H2O2"  1.0)
+		("N2"    1.0)            
+        );
+    }
+
+    // ── R6: O + O + M = O2 + M ──────────────────────────────────────────────
+    // Paper: A=6.16e15, n=-0.50, E=0  | Ref: Tsang [47]
+    // SI:    A=6.16e15×1e-6=6.16e9, Ta=0
+    R6
+    {
+        type        reversibleThirdBodyArrheniusReaction;
+        reaction    "O + O = O2";
+        A           6.16e+09;
+        beta        -0.50;
+        Ta          0.0;
+        coeffs
+        (
+		("H2"    2.5)
+		("O2"    1.0)
+		("H2O"   12.0)
+		("H"     1.0)
+		("O"     1.0)
+		("OH"    1.0)
+		("HO2"   1.0)
+		("H2O2"  1.0)
+		("N2"    1.0) 
+        );
+    }
+
+    // ── R7: O + H + M = OH + M ──────────────────────────────────────────────
+    // Paper: A=4.71e18, n=-1.0, E=0  | Ref: Tsang [47]
+    // SI:    A=4.71e18×1e-6=4.71e12, Ta=0
+    R7
+    {
+        type        reversibleThirdBodyArrheniusReaction;
+        reaction    "O + H = OH";
+        A           4.71e+12;
+        beta        -1.0;
+        Ta          0.0;
+        coeffs
+        (
+		("H2"    2.5)
+		("O2"    1.0)
+		("H2O"   12.0)
+		("H"     1.0)
+		("O"     1.0)
+		("OH"    1.0)
+		("HO2"   1.0)
+		("H2O2"  1.0)
+		("N2"    1.0) 
+        );
+    }
+
+    // ── R8: H + OH + M = H2O + M ────────────────────────────────────────────
+    // Paper: A=3.8e22, n=-2.0, E=0  | Ref: See text
+    // SI:    A=3.8e22×1e-6=3.8e16, Ta=0
+    // Efficiencies: H2=0.73, H2O=3.65, others=1.0
+    R8
+    {
+        type        reversibleThirdBodyArrheniusReaction;
+        reaction    "H + OH = H2O";
+        A           3.8e+16;
+        beta        -2.0;
+        Ta          0.0;
+        coeffs
+        (
+		("H2"    2.5)
+		("O2"    1.0)
+		("H2O"   12.0)
+		("H"     1.0)
+		("O"     1.0)
+		("OH"    1.0)
+		("HO2"   1.0)
+		("H2O2"  1.0)
+		("N2"    1.0)         );
+    }
+
+    // ── R9: H + O2 + M = HO2 + M  (low-pressure limit, M=N2) ───────────────
+    // Paper k0: A=6.37e20, n=-1.72, E=0.52  | Ref: Michael [19]
+    // SI:    A=6.37e20×1e-6=6.37e14, Ta=0.52×503.07=262
+    // Efficiencies: H2=1.3, H2O=14.0, O2=0.78, others=1.0
+    R9
+    {
+        type            reversibleArrheniusTroeFallOff;
+        reaction        "H + O2 = HO2";
+        k0
+        {
+            A               6.37e+14;
+            beta            -1.72;
+            Ta              261.5964;
+        }
+        kInf
+        {
+            A               1.48e+09;
+            beta            0.60;
+            Ta              0.0;
+        }
+        F  // টিউটোরিয়ালের মতো F ব্লক যোগ করলেন
+        {
+            alpha           0.8;
+            Tsss            1e-30;
+            Ts              1e+30;
+            Tss             4.503599627e+15;
+        }
+        thirdBodyEfficiencies
+        {
+            coeffs
+            (
+		("H2"    2.5)
+		("O2"    1.0)
+		("H2O"   11.0)
+		("H"     1.0)
+		("O"     1.0)
+		("OH"    1.0)
+		("HO2"   1.0)
+		("H2O2"  1.0)
+		("N2"    1.0)             );
+        }
+    }
+
+    // ── R10: HO2 + H = H2 + O2 ──────────────────────────────────────────────
+    // Paper: A=1.66e13, n=0, E=0.82  | Ref: Mueller [1]
+    // SI:    A=1.66e13×1e-3=1.66e10, Ta=0.82×503.07=413
+    R10
+    {
+        type        reversibleArrheniusReaction;
+        reaction    "HO2 + H = H2 + O2";
+        A           1.66e+10;
+        beta        0.0;
+        Ta          413.0;
+    }
+
+    // ── R11: HO2 + H = OH + OH ───────────────────────────────────────────────
+    // Paper: A=7.08e13, n=0, E=0.30  | Ref: Mueller [1]
+    // SI:    A=7.08e13×1e-3=7.08e10, Ta=0.30×503.07=151
+    R11
+    {
+        type        reversibleArrheniusReaction;
+        reaction    "HO2 + H = OH + OH";
+        A           7.08e+10;
+        beta        0.0;
+        Ta          151.0;
+    }
+
+    // ── R12: HO2 + O = OH + O2 ───────────────────────────────────────────────
+    // Paper: A=3.25e13, n=0, E=0  | Ref: Baulch [34]
+    // SI:    A=3.25e13×1e-3=3.25e10, Ta=0
+    R12
+    {
+        type        reversibleArrheniusReaction;
+        reaction    "HO2 + O = OH + O2";
+        A           3.25e+10;
+        beta        0.0;
+        Ta          0.0;
+    }
+
+    // ── R13: HO2 + OH = H2O + O2 ─────────────────────────────────────────────
+    // Paper: A=2.89e13, n=0, E=-0.50  | Ref: Baulch [34]
+    // SI:    A=2.89e13×1e-3=2.89e10, Ta=-0.50×503.07=-252
+    R13
+    {
+        type        reversibleArrheniusReaction;
+        reaction    "HO2 + OH = H2O + O2";
+        A           2.89e+10;
+        beta        0.0;
+        Ta          -252.0;
+    }
+
+    // ── R14a: HO2 + HO2 = H2O2 + O2  (low-T channel) ────────────────────────
+    // Paper: A=4.20e14, n=0, E=11.98  | Ref: Hippler [49]
+    // SI:    A=4.20e14×1e-3=4.20e11, Ta=11.98×503.07=6027
+    R14a
+    {
+        type        reversibleArrheniusReaction;
+        reaction    "HO2 + HO2 = H2O2 + O2";
+        A           4.20e+11;
+        beta        0.0;
+        Ta          6027.0;
+    }
+
+    // ── R14b: HO2 + HO2 = H2O2 + O2  (high-T channel) ───────────────────────
+    // Paper: A=1.30e11, n=0, E=-1.63  | Ref: Warnatz [50]
+    // SI:    A=1.30e11×1e-3=1.30e8, Ta=-1.63×503.07=-820
+    R14b
+    {
+        type        reversibleArrheniusReaction;
+        reaction    "HO2 + HO2 = H2O2 + O2";
+        A           1.30e+08;
+        beta        0.0;
+        Ta          -820.0;
+    }
+
+    // ── R15: H2O2 + M = OH + OH + M ──────────────────────────────────────────
+    // Paper k0: A=1.20e17, n=0, E=45.5  | Ref: Brouwer [51]
+    // SI:    A=1.20e17×1e-6=1.20e11, Ta=45.5×503.07=22890
+    // Efficiencies: H2=2.5, H2O=12.0, others=1.0
+    R15
+    {
+        type            reversibleArrheniusTroeFallOff;
+        reaction        "H2O2 = OH + OH";
+        k0
+        {
+            A               1.20e+14;
+            beta            0.00;
+            Ta              22889.685;
+        }
+        kInf
+        {
+            A               2.95e+14;
+            beta            0.00;
+            Ta              24348.588;
+        }
+        F  
+        {
+            alpha           0.5;
+            Tsss            1e-30;
+            Ts              1e+30;
+            Tss             4.503599627e+15;
+        }
+        thirdBodyEfficiencies
+        {
+            coeffs
+            (
+ 		("H2"    2.5)
+		("O2"    1.0)
+		("H2O"   12.0)
+		("H"     1.0)
+		("O"     1.0)
+		("OH"    1.0)
+		("HO2"   1.0)
+		("H2O2"  1.0)
+		("N2"    1.0) 
+
+            );
+        }
+    }
+
+    // ── R16: H2O2 + H = H2O + OH ─────────────────────────────────────────────
+    // Paper: A=2.41e13, n=0, E=3.97  | Ref: Tsang [47]
+    // SI:    A=2.41e13×1e-3=2.41e10, Ta=3.97×503.07=1997
+    R16
+    {
+        type        reversibleArrheniusReaction;
+        reaction    "H2O2 + H = H2O + OH";
+        A           2.41e+10;
+        beta        0.0;
+        Ta          1997.0;
+    }
+
+    // ── R17: H2O2 + H = HO2 + H2 ─────────────────────────────────────────────
+    // Paper: A=4.82e13, n=0, E=7.95  | Ref: Tsang [47]
+    // SI:    A=4.82e13×1e-3=4.82e10, Ta=7.95×503.07=3999
+    R17
+    {
+        type        reversibleArrheniusReaction;
+        reaction    "H2O2 + H = HO2 + H2";
+        A           4.82e+10;
+        beta        0.0;
+        Ta          3999.0;
+    }
+
+    // ── R18: H2O2 + O = HO2 + OH ─────────────────────────────────────────────
+    // Paper: A=9.55e6, n=2.0, E=3.97  | Ref: Tsang [47]
+    // SI:    A=9.55e6×1e-3=9.55e3, Ta=3.97×503.07=1997
+    R18
+    {
+        type        reversibleArrheniusReaction;
+        reaction    "H2O2 + O = HO2 + OH";
+        A           9.55e+03;
+        beta        2.0;
+        Ta          1997.0;
+    }
+
+    // ── R19a: H2O2 + OH = HO2 + H2O  (low-T channel) ────────────────────────
+    // Paper: A=1.00e12, n=0, E=0  | Ref: Hippler [52]
+    // SI:    A=1.00e12×1e-3=1.00e9, Ta=0
+    R19a
+    {
+        type        reversibleArrheniusReaction;
+        reaction    "H2O2 + OH = HO2 + H2O";
+        A           1.00e+09;
+        beta        0.0;
+        Ta          0.0;
+    }
+
+    // ── R19b: H2O2 + OH = HO2 + H2O  (high-T channel) ───────────────────────
+    // Paper: A=5.8e14, n=0, E=9.56  | Ref: Hippler [52]
+    // SI:    A=5.8e14×1e-3=5.8e11, Ta=9.56×503.07=4809
+    R19b
+    {
+        type        reversibleArrheniusReaction;
+        reaction    "H2O2 + OH = HO2 + H2O";
+        A           5.8e+11;
+        beta        0.0;
+        Ta          4809.0;
+    }
+}
+
+// ************************************************************************* //

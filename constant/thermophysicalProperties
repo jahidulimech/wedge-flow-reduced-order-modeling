@@ -1,0 +1,44 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     |                                                 |
+|   \\  /    A nd           |                                                 |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+/*
+  thermophysicalProperties — H2/air ODW
+  
+  Model: hePsiThermo / multiComponentMixture / perfectGas / janaf / sensibleEnthalpy
+  Species defined in constant/foam/species.foam
+  JANAF coefficients defined in constant/foam/thermo.foam
+*/
+
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      thermophysicalProperties;
+}
+
+thermoType
+{
+    type            hePsiThermo;
+    mixture         multiComponentMixture;
+    transport       const;
+    thermo          janaf;
+    energy          sensibleInternalEnergy;
+    equationOfState perfectGas;
+    specie          specie;
+}
+
+inertSpecie     N2;     // background / diluent species
+
+// Species list — must match species.foam
+#include "foam/species.foam"
+
+// JANAF coefficients — one entry per species
+#include "foam/thermo.foam"
+
+// ************************************************************************* //
