@@ -1,3 +1,5 @@
+<img width="1082" height="637" alt="Screenshot 2026-08-10 000751" src="https://github.com/user-attachments/assets/c4e4c683-2ab6-47f5-81b5-a2d379865bc6" />
+<img width="2055" height="1858" alt="fom_pod_dmd_p_representative_times" src="https://github.com/user-attachments/assets/0b82191f-c63c-4685-a8a6-92c6c94dd3a5" />
 # 2D wedge ROM/DMD analysis
 
 This directory is a reproducible, non-destructive analysis of the parent OpenFOAM case. It uses only verified decomposed p, rho, and U fields saved through 36 us.
